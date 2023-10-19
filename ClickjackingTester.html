@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>Simple ClickJacking Test</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style>
+    :invalid {border-color: red}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h2>ClickJacking Tester</h2>
+        <div id="HasNoUrl" style="display: none;">
+            <div class="form-group">
+                <label for="txtNewUrl">Please provide a URL below, or append it to this page as parameter "url". e.g. "?url=https://www.WebsiteToTest.com/"</label>
+                <input id="txtNewUrl" class="form-control" type="url" value="" placeholder="https://www.SampleWebsite.com/"
+                    onkeyup="if(event.keyCode == 13)document.getElementById('btnUrl').click();"/>
+                <button id="btnUrl"  class="btn btn-primary" onclick="LoadFrame(document.getElementById('txtNewUrl').value)">Load in Frame</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                URL loaded: <a id="site" target="_blank"></a>
+            </div>
+                <div class="card-body">                    
+                    <div class="alert alert-primary">If you can see the page loaded below then it is vulnerable to clickjacking</div>
+                    <iframe id="myframe" width='1000' height='500' src= 'about:blank'> </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    var params = new URLSearchParams(window.location.search);
+    var frame = document.getElementById("myframe");
+    frame.src = "about:blank";
+    var url = params.get("url");
+    
+    console.debug("url is " + url);
+    if (url == null) {
+        document.getElementById("HasNoUrl").style = "display:block";
+    } else {
+        LoadFrame(url);
+    }
+    
+    function LoadFrame(url) {
+        frame.src = url;
+        var link = document.getElementById("site");
+        link.innerText = url;
+        link.href = url;
+    }
+</script>
+</body>
+</html> 
